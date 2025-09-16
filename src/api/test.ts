@@ -1,7 +1,6 @@
-const api = "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export async function getHello() {
-  console.log("Fetching from", api);
-  const res = await fetch(`${api}/`);
+  const res = await fetch(`${API_URL}/`);
   return res.text();
 }
