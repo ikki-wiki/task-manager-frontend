@@ -7,7 +7,7 @@ const API_URL =
     : LOCAL_API;
 
 export async function getHello() {
-  const res = await fetch(`${API_URL}/`);
+  const res = await fetch(`https://task-manager-backend-9yge.onrender.com/`);
   if (!res.ok) throw new Error("Failed to fetch");
   return res.text();
 }
