@@ -1,71 +1,42 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-
-interface Task {
-  id: number;
-  title: string;
-  completed: boolean;
-}
+import { useEffect, useState } from "react";
+import { type Task, fetchTasks } from "@/api/tasks_api";
+import { NewTaskModal } from "@/components/tasks/NewTaskModal.tsx";
+import { EditTaskModal } from "@/components/tasks/EditTaskModal.tsx";
+import { DeleteTaskModal } from "@/components/tasks/DeleteTaskModal.tsx";
 
 export function Tasks() {
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, title: "Sample task", completed: false },
-  ]);
-  const [newTask, setNewTask] = useState("");
+  const [tasks, setTasks] = useState<Task[]>([]);
 
-  const addTask = () => {
-    if (!newTask.trim()) return;
-    setTasks([...tasks, { id: Date.now(), title: newTask, completed: false }]);
-    setNewTask("");
+  const loadTasks = async () => {
+    const data = await fetchTasks();
+    setTasks(data);
   };
 
-  const toggleTask = (id: number) => {
-    setTasks(tasks.map(task => task.id === id ? { ...task, completed: !task.completed } : task));
-  };
-
-  const deleteTask = (id: number) => {
-    setTasks(tasks.filter(task => task.id !== id));
-  };
+  useEffect(() => {
+    loadTasks();
+  }, []);
 
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Tasks</h1>
 
-      {/* Add new task */}
-      <div className="flex gap-2 mb-4">
-        <input
-          type="text"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-          placeholder="New task..."
-          className="flex-1 border rounded px-2 py-1"
-        />
-        <Button onClick={addTask}>Add</Button>
+      <div className="mb-4">
+        <NewTaskModal onTaskAdded={loadTasks} />
       </div>
 
-      {/* Task list */}
       <ul className="space-y-2">
         {tasks.map((task) => (
-          <li key={task.id} className="flex items-center justify-between border rounded p-2">
-            <div>
-              <input
-                type="checkbox"
-                checked={task.completed}
-                onChange={() => toggleTask(task.id)}
-                className="mr-2"
-              />
-              <span className={task.completed ? "line-through text-gray-500" : ""}>
-                {task.title}
-              </span>
+          <li key={task._id} className="flex justify-between items-center border rounded p-2">
+            <span className={task.completed ? "line-through text-gray-500" : ""}>
+              {task.title}
+            </span>
+            <div className="flex gap-2">
+              <EditTaskModal task={task} onTaskUpdated={loadTasks} />
+              <DeleteTaskModal taskId={task._id} onTaskDeleted={loadTasks} />
             </div>
-            <Button variant="destructive" size="sm" onClick={() => deleteTask(task.id)}>
-              Delete
-            </Button>
           </li>
         ))}
       </ul>
     </div>
   );
 }
-
-export default Tasks;
