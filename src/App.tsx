@@ -3,15 +3,9 @@ import { useEffect, useState } from "react";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Home } from "@/pages/Home";
+import { Tasks } from "@/pages/Tasks";
+import { Settings } from "@/pages/Settings";
 import { ThemeProvider } from "@/components/theme-provider";
-
-function Tasks() {
-  return <h1 className="text-2xl font-bold">Tasks</h1>;
-}
-
-function Settings() {
-  return <h1 className="text-2xl font-bold">Settings</h1>;
-}
 
 function App() {
 
